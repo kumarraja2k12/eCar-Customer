@@ -115,7 +115,7 @@ public class BluetoothLeService extends Service {
     private String ConvertByteArrayToHex(byte[] data) {
         final StringBuilder stringBuilder = new StringBuilder(data.length);
         for(byte byteChar : data)
-            stringBuilder.append(String.format("%02X ", byteChar));
+            stringBuilder.append(String.format("%02X", byteChar));
         return stringBuilder.toString();
     }
 

@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -106,6 +107,7 @@ public class DeviceReadingsActivity extends BaseActivity {
                         String valueType = null;
                         if (intent.hasExtra(BluetoothLeService.EXTRA_UUID)) {
                             if (GattUtils.isFluidLevelUUID(intent.getStringExtra(BluetoothLeService.EXTRA_UUID))) {
+                                Log.d("DeviceReadingsActivity:", "Fluid level data - " + data);
                                 data = data.trim();
                                 value = String.valueOf(Integer.parseInt(data, 16));
                                 valueType = "level";
