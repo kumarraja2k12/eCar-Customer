@@ -109,7 +109,7 @@ public class DeviceReadingsActivity extends BaseActivity {
                             if (GattUtils.isFluidLevelUUID(intent.getStringExtra(BluetoothLeService.EXTRA_UUID))) {
                                 Log.d("DeviceReadingsActivity:", "Fluid level data - " + data);
                                 data = data.trim();
-                                value = String.valueOf(Integer.parseInt(data, 16));
+                                value = String.valueOf(toLittleEndian(data));
                                 valueType = "level";
                                 data = "Fluid level data: " + value;
                                 processReading(value, valueType);
@@ -117,7 +117,7 @@ public class DeviceReadingsActivity extends BaseActivity {
 
                             if (GattUtils.isCOLevelUUID(intent.getStringExtra(BluetoothLeService.EXTRA_UUID))) {
                                 data = data.trim();
-                                value = String.valueOf(Integer.parseInt(data, 16));
+                                value = String.valueOf(toLittleEndian(data));
                                 valueType = "ppm";
                                 data = "CO level data: " + value;
                                 processReading(value, valueType);
@@ -129,6 +129,17 @@ public class DeviceReadingsActivity extends BaseActivity {
             }
         }
     };
+
+    private int toLittleEndian(String hex) {
+        int ret = 0;
+        String hexLittleEndian = "";
+        if (hex.length() % 2 != 0) return ret;
+        for (int i = hex.length() - 2; i >= 0; i -= 2) {
+            hexLittleEndian += hex.substring(i, i + 2);
+        }
+        ret = Integer.parseInt(hexLittleEndian, 16);
+        return ret;
+    }
 
     private String removeNonDigits(final String str) {
         if (str == null || str.length() == 0) {
