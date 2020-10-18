@@ -27,8 +27,10 @@ import com.example.blegattclient.ble.BluetoothLeService;
 import com.example.blegattclient.ble.GattUtils;
 import com.example.blegattclient.location.LocationService;
 import com.example.blegattclient.models.ReadingModel;
+import com.example.blegattclient.notifications.NotificationProvider;
 import com.example.blegattclient.services.IServiceCallback;
 import com.example.blegattclient.services.IoTService;
+import com.example.blegattclient.services.pojo.Threshold;
 import com.example.blegattclient.services.responses.AddReadingResponse;
 import com.example.blegattclient.storage.db.DBHelper;
 import com.example.blegattclient.storage.preferences.Preferences;
@@ -51,6 +53,11 @@ public class DeviceReadingsActivity extends BaseActivity {
     private String mDeviceAddress;
     private String vehicleNumber;
     private DBHelper dbHelper;
+    private int PPM_WARNING = 2500;
+    private int PPM_CRITICAL = 3000;
+    private int LEVEL_WARNING = 1000;
+    private int LEVEL_CRITICAL = 500;
+
 
     private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;
@@ -188,7 +195,17 @@ public class DeviceReadingsActivity extends BaseActivity {
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
         vehicleNumber = Preferences.getInstance(getApplicationContext()).readVehicleNumber();
         dbHelper = DBHelper.getInstance(getApplicationContext());
+        Threshold threshold_ppm = Preferences.getInstance(getApplicationContext()).readPpmThreshold();
+        if(threshold_ppm != null) {
+            PPM_WARNING = (int)threshold_ppm.warningThreshold;
+            PPM_CRITICAL = (int)threshold_ppm.criticalThreshold;
+        }
 
+        Threshold threshold_level = Preferences.getInstance(getApplicationContext()).readLevelThreshold();
+        if(threshold_level != null) {
+            LEVEL_WARNING = (int)threshold_level.warningThreshold;
+            LEVEL_CRITICAL = (int)threshold_level.criticalThreshold;
+        }
         // Sets up UI references.
         //((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
         mConnectionState = (TextView) findViewById(R.id.connection_state);
@@ -277,46 +294,41 @@ public class DeviceReadingsActivity extends BaseActivity {
                                     mDataField.getText());
 
                     if(valueType == "ppm") {
-                        int min = 0;
-                        int max = 50;
                         int valueInt = Integer.parseInt(value);
 
                         CircularSeekBar seekBar = ((CircularSeekBar)findViewById(R.id.seek_bar_co_level));
                         seekBar.setProgress(Float.parseFloat(value));
                         seekBar.setProgressText(value);
-                        if(valueInt > 20 && valueInt < 30) {
+                        if(valueInt > PPM_WARNING && valueInt <= PPM_CRITICAL) {
                             //warning
                             seekBar.setRingColor(ContextCompat.getColor(getApplicationContext(), android.R.color.holo_orange_dark));
-                        } else if(valueInt < 20) {
-                            //normal
-                            seekBar.setRingColor(ContextCompat.getColor(getApplicationContext(), android.R.color.holo_green_dark));
-
-                        } else {
+                        } else if(valueInt > PPM_CRITICAL) {
                             //critical
                             seekBar.setRingColor(ContextCompat.getColor(getApplicationContext(), android.R.color.holo_red_dark));
-
+                            NotificationProvider.sendLocalNotification(getApplicationContext(), "Attention", "Vehicle status critical!");
+                        } else {
+                            //normal
+                            seekBar.setRingColor(ContextCompat.getColor(getApplicationContext(), android.R.color.holo_green_dark));
                         }
-
                     }
 
                     if(valueType == "level") {
-                        int min = 0;
-                        int max = 12;
+
                         int valueInt = Integer.parseInt(value);
 
                         CircularSeekBar seekBar = ((CircularSeekBar)findViewById(R.id.seek_bar_fluid_level));
                         seekBar.setProgress(Float.parseFloat(value));
                         seekBar.setProgressText(value);
-                        if(valueInt > 3 && valueInt <= 6) {
-                            //warning
-                            seekBar.setRingColor(ContextCompat.getColor(getApplicationContext(), android.R.color.holo_orange_dark));
-                        } else if(valueInt <= 3) {
-                            //critical
-                            seekBar.setRingColor(ContextCompat.getColor(getApplicationContext(), android.R.color.holo_red_dark));
-
-                        } else {
+                        if(valueInt > LEVEL_WARNING) {
                             //normal
                             seekBar.setRingColor(ContextCompat.getColor(getApplicationContext(), android.R.color.holo_green_dark));
+                        } else if(valueInt > LEVEL_CRITICAL && valueInt <= LEVEL_WARNING) {
+                            //warning
+                            seekBar.setRingColor(ContextCompat.getColor(getApplicationContext(), android.R.color.holo_orange_dark));
+                        } else {
+                            //critical
+                            seekBar.setRingColor(ContextCompat.getColor(getApplicationContext(), android.R.color.holo_red_dark));
+                            NotificationProvider.sendLocalNotification(getApplicationContext(), "Attention", "Vehicle status critical!");
                         }
                     }
                 }

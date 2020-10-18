@@ -48,17 +48,21 @@ public class Preferences {
 
     public boolean writeThresholds(List<Threshold> thresholds) {
 
-        SharedPreferences pref = getSharedPreferences();
-        SharedPreferences.Editor editor = pref.edit();
-        for (Threshold threshold: thresholds) {
-            if(threshold.type.equalsIgnoreCase("Level")) {
-                editor.putString(KEY_THRESHOLD_LEVEL, threshold.toString());
-            } else if(threshold.type.equalsIgnoreCase("ppm")) {
-                editor.putString(KEY_THRESHOLD_PPM, threshold.toString());
+        if(thresholds.size() > 0) {
+            SharedPreferences pref = getSharedPreferences();
+            SharedPreferences.Editor editor = pref.edit();
+            for (Threshold threshold : thresholds) {
+                if (threshold.type.equalsIgnoreCase("Level")) {
+                    editor.putString(KEY_THRESHOLD_LEVEL, threshold.toString());
+                } else if (threshold.type.equalsIgnoreCase("ppm")) {
+                    editor.putString(KEY_THRESHOLD_PPM, threshold.toString());
+                }
             }
+            editor.apply();
+            ;
+            return editor.commit(); // commit changes
         }
-        editor.apply();;
-        return editor.commit(); // commit changes
+        return false;
     }
 
     public Threshold readLevelThreshold() {

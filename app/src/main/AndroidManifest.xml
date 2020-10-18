@@ -2,13 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.blegattclient">
 
-    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -17,20 +19,29 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.DeviceScanActivity"/>
-        <activity android:name=".activities.SplashActivity" android:theme="@style/SplashTheme">
+        <activity android:name=".activities.TestActivity" />
+        <activity android:name=".activities.DeviceScanActivity" />
+        <activity
+            android:name=".activities.SplashActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.DeviceControlActivity"/>
-        <activity android:name=".activities.RegisterActivity"/>
-        <activity android:name=".activities.MenuActivity"/>
-        <activity android:name=".activities.DeviceReadingsActivity"/>
-        <activity android:name=".activities.HistoryActivity"/>
-        <service android:name=".ble.BluetoothLeService" android:enabled="true"/>
-        <service android:name=".location.LocationService" android:enabled="true" />
+        <activity android:name=".activities.DeviceControlActivity" />
+        <activity android:name=".activities.RegisterActivity" />
+        <activity android:name=".activities.MenuActivity" />
+        <activity android:name=".activities.DeviceReadingsActivity" />
+        <activity android:name=".activities.HistoryActivity" />
+
+        <service
+            android:name=".ble.BluetoothLeService"
+            android:enabled="true" />
+        <service
+            android:name=".location.LocationService"
+            android:enabled="true" />
     </application>
 
 </manifest>

@@ -11,6 +11,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.blegattclient.services.pojo.Threshold;
 import com.example.blegattclient.services.requests.AddReadingRequest;
 import com.example.blegattclient.services.requests.RegisterVehicleRequest;
 import com.example.blegattclient.services.responses.AddReadingResponse;
@@ -84,7 +85,7 @@ public class VolleyServiceAdapter {
 
     public void RegisterVehicle(final RegisterVehicleRequest vehicleRequest, final IServiceCallback callback, final String accessToken) {
 
-        String url = baseUrl + "/api/services/SKAIoTServiceGroup/SKAIoTAssetService/VehicleRegistration";
+        String url = baseUrl + "/api/services/SKAIoTServiceGroup/SKAIoTAssetService/VehicleRegistrationV2";
 
         JSONObject obj = new JSONObject();
         try {
@@ -99,18 +100,24 @@ public class VolleyServiceAdapter {
         JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, url, obj, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                RegisterVehicleResponse vehicleResponse = null;
+                RegisterVehicleResponse vehicleResponse = new RegisterVehicleResponse();
                 try {
                     String assetId = response.getString("AssetId");
                     String registrationStatus = response.getString("RegistrationStatus");
-                    JSONArray thresholdsJsonArray = response.optJSONArray("Thresholds");
-                    if(thresholdsJsonArray != null) {
-                        for(int counter = 0; counter < thresholdsJsonArray.length(); counter++) {
-                            JSONObject jsonObject = thresholdsJsonArray.getJSONObject(counter);
-                            String type = jsonObject.getString("Type");
+                    try {
+                        JSONArray thresholdsJsonArray = response.optJSONArray("Thresholds");
+                        if (thresholdsJsonArray != null && thresholdsJsonArray.length() > 0) {
+                            for (int counter = 0; counter < thresholdsJsonArray.length(); counter++) {
+                                JSONObject jsonObject = thresholdsJsonArray.getJSONObject(counter);
+                                Threshold threshold = new Threshold();
+                                threshold.type = jsonObject.getString("Type");
+                                threshold.operator = jsonObject.getString("Operator");
+                                threshold.warningThreshold = jsonObject.getDouble("WarningThreshold");
+                                threshold.criticalThreshold = jsonObject.getDouble("criticalThreshold");
+                                vehicleResponse.thresholds.add(threshold);
+                            }
                         }
-                    }
-                    vehicleResponse = new RegisterVehicleResponse();
+                    } catch (Exception ex) { /*Parse error*/ }
                     vehicleResponse.assetId = assetId;
                     vehicleResponse.registrationStatus = registrationStatus;
 

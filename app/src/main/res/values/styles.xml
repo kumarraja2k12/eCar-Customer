@@ -8,7 +8,6 @@
     </style>
 
 
-
     <!--<style name="Theme.Base" parent="android:Theme.Light" />
     <style name="Theme.Sample" parent="Theme.Base" />
     <style name="AppTheme" parent="Theme.Sample" />-->
@@ -30,4 +29,13 @@
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

@@ -23,4 +23,12 @@ public class ErrorResponse {
         response.message = "Unknown error";
         return response;
     }
+
+    public static ErrorResponse ParseError()
+    {
+        ErrorResponse response = new ErrorResponse();
+        response.exceptionType = "ParseException";
+        response.message = "Parse error";
+        return response;
+    }
 }

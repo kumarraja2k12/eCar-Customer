@@ -14,6 +14,5 @@ public class RegisterVehicleResponse {
     @SerializedName("RegistrationStatus")
     public String registrationStatus;
 
-    //@SerializedName("Thresholds")
-    //public List<Threshold> thresholds = new ArrayList<>();
+    public List<Threshold> thresholds = new ArrayList<>();
 }

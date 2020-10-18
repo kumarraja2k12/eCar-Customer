@@ -2,6 +2,11 @@ package com.example.blegattclient;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -91,5 +96,15 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void requiredField(TextView text) {
+        String colored = "*";
+        SpannableStringBuilder builder = new SpannableStringBuilder(text.getText() + colored);
+
+        builder.setSpan(new ForegroundColorSpan(Color.RED), text.getText().length(), builder.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        text.setText(builder);
     }
 }

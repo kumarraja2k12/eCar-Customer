@@ -66,6 +66,10 @@ public class MenuActivity extends BaseActivity {
                     // set an Intent to Another Activity
                     Intent intent = new Intent(MenuActivity.this, HistoryActivity.class);
                     startActivity(intent); // start Intent*/
+                } else if (menuItems.get(position).title.equalsIgnoreCase("Test")) {
+                    // set an Intent to Another Activity
+                    Intent intent = new Intent(MenuActivity.this, TestActivity.class);
+                    startActivity(intent); // start Intent*/
                 }
             }
         });

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -42,24 +43,38 @@ public class RegisterActivity extends BaseActivity {
         phoneNumber = findViewById(R.id.edittext_phone_number);
         vehicleNumber = findViewById(R.id.edittext_vehicle_number);
         model = findViewById(R.id.edittext_model);
+
+        requiredField((TextView) findViewById(R.id.label_customer_name));
+        requiredField((TextView) findViewById(R.id.label_phone_number));
+        requiredField((TextView) findViewById(R.id.label_vehicle_number));
+        requiredField((TextView) findViewById(R.id.label_model));
     }
 
     public void Register(View view) {
-        //TODO:: Validation
 
-        RegisterVehicleRequest request = new RegisterVehicleRequest(customerName.getText().toString(),
-                phoneNumber.getText().toString(),
-                vehicleNumber.getText().toString(),
-                model.getText().toString());
+        RegisterVehicleRequest request = new RegisterVehicleRequest(customerName.getText().toString().trim(),
+                phoneNumber.getText().toString().trim(),
+                vehicleNumber.getText().toString().trim(),
+                model.getText().toString().trim());
 
-        //TODO:: Show progress dialog
+        if(request.phoneNumber.isEmpty()
+                || request.vehicleNumber.isEmpty()
+                || request.customerName.isEmpty()
+                || request.model.isEmpty()) {
+
+            showLongToast("Please provide data in all fields !");
+            return;
+        }
+
+        showProgressDialog("Please wait...");
         IoTService.getInstance(getApplicationContext()).RegisterVehicle(request, new IServiceCallback() {
             @Override
             public void OnCompleted(Object response) {
                 RegisterVehicleResponse registeredVehicle = (RegisterVehicleResponse)response;
                 Preferences preferences = Preferences.getInstance(getApplicationContext());
                 boolean result = preferences.writeVehicleNumber(registeredVehicle.assetId);
-                //result = preferences.writeThresholds(registeredVehicle.thresholds);
+                result = preferences.writeThresholds(registeredVehicle.thresholds);
+                hideProgressDialog();
                 showDialog("Success", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
