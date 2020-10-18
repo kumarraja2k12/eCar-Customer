@@ -35,9 +35,8 @@ public class SplashActivity extends BaseActivity {
             public void run() {
 
                 String vehicleNumber = Preferences.getInstance(getApplicationContext()).readVehicleNumber();
-                if(vehicleNumber == null || vehicleNumber.isEmpty())
-                {
-                    Intent i = new Intent(SplashActivity.this, RegisterActivity.class);
+                if(vehicleNumber == null || vehicleNumber.isEmpty()) {
+                    Intent i = new Intent(SplashActivity.this, RegisterOrEnterVehicleNumberActivity.class);
                     startActivity(i);
                     finish();
                 } else {

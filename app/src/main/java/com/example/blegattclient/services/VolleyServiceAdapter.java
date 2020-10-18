@@ -222,4 +222,61 @@ public class VolleyServiceAdapter {
         queue.add(postRequest);
     }
 
+    public void VerifyExistingVehicle(final String vehicleNumber, final IServiceCallback callback, final String accessToken) {
+
+        String url = baseUrl + "/api/services/SKAIoTServiceGroup/SKAIoTAssetService/VerifyVehicle";
+
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("_registrationNumber", vehicleNumber);
+        } catch (Exception e) {
+            callback.onError(ErrorResponse.UnknownError());
+        }
+
+        JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, url, obj, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                AddReadingResponse vehicleResponse = null;
+                try {
+                    String Status = response.getString("RequestStatus");
+
+                    vehicleResponse = new AddReadingResponse();
+                    vehicleResponse.Status = Status;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                callback.OnCompleted(vehicleResponse);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                try {
+                    Log.d("Error", new String(error.networkResponse.data));
+                    Log.d("Error.Response", Objects.requireNonNull(error.getMessage()));
+                    callback.onError(new Gson().fromJson(new String(error.networkResponse.data), ErrorResponse.class));
+                } catch (Exception ex) {
+                    try {
+                        callback.onError(new Gson().fromJson(new String(error.networkResponse.data), ErrorResponse.class));
+                    } catch (Exception ex2) {
+                        callback.onError(ErrorResponse.UnknownError());
+                    }
+                }
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders()
+            {
+                Map<String, String> obj = new HashMap<String, String>();
+                obj.put("Authorization", "Bearer " + accessToken);
+                return obj;
+            }
+        };
+
+        postRequest.setRetryPolicy(new DefaultRetryPolicy(20000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        queue.add(postRequest);
+    }
 }

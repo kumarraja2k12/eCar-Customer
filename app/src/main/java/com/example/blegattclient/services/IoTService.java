@@ -77,5 +77,34 @@ public class IoTService {
             }
         });
     }
+
+    public void VerifyExistingVehicle(final String vehicleNumber, final IServiceCallback callback)
+    {
+        Log.d("IotService:",  "VerifyExistingVehicle: " + vehicleNumber);
+        serviceAdapter.GetToken(new IServiceCallback() {
+
+            @Override
+            public void onError(Object error) {
+                //Do nothing
+            }
+
+            @Override
+            public void OnCompleted(Object response) {
+                serviceAdapter.VerifyExistingVehicle(vehicleNumber, new IServiceCallback() {
+                    @Override
+                    public void OnCompleted(Object response) {
+                        Log.d("IotService: ",  "Success - VerifyExistingVehicle..");
+                        callback.OnCompleted(response);
+                    }
+
+                    @Override
+                    public void onError(Object error) {
+                        Log.d("IotService: ",  "Failed to VerifyExistingVehicle ..");
+                        callback.onError(error);
+                    }
+                }, (String)response);
+            }
+        });
+    }
 }
 

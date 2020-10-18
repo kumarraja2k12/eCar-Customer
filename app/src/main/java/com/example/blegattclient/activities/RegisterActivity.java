@@ -3,6 +3,7 @@ package com.example.blegattclient.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -48,6 +49,16 @@ public class RegisterActivity extends BaseActivity {
         requiredField((TextView) findViewById(R.id.label_phone_number));
         requiredField((TextView) findViewById(R.id.label_vehicle_number));
         requiredField((TextView) findViewById(R.id.label_model));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void Register(View view) {
