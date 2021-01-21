@@ -1,2 +1,4 @@
 # eCar-Customer
-eCar Android application for customer
+BLe based Android application that would 
+  - listen for data from BLeServer 
+  - Update the UI automatically.
